@@ -8,5 +8,5 @@ use Modules\Invoices\Entities\Invoice;
 
 interface InvoiceReadModelRepository
 {
-    public function getInvoice(int $invoiceId): Invoice;
+    public function getInvoice(string $invoiceId): Invoice;
 }

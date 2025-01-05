@@ -12,7 +12,8 @@ final readonly class NotificationFacade implements NotificationFacadeInterface
 {
     public function __construct(
         private DriverInterface $driver,
-    ) {}
+    ) {
+    }
 
     public function notify(NotifyData $data): void
     {

@@ -9,7 +9,7 @@ use Illuminate\Contracts\Support\Arrayable;
 final readonly class InvoiceProductLineDto implements Arrayable
 {
     public function __construct(
-        private int $id,
+        private string $id,
         private string $invoiceId,
         private string $name,
         private int $price,

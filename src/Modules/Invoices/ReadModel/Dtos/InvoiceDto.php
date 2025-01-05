@@ -10,7 +10,7 @@ use Modules\Invoices\Domain\Enums\StatusEnum;
 final readonly class InvoiceDto
 {
     public function __construct(
-        private int $id,
+        private string $id,
         private string $customerName,
         private string $customerEmail,
         private StatusEnum $status,

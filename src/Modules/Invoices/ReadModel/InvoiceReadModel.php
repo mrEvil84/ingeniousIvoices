@@ -15,7 +15,7 @@ final readonly class InvoiceReadModel
     ) {
     }
 
-    public function getInvoice(int $invoiceId): InvoiceDto
+    public function getInvoice(string $invoiceId): InvoiceDto
     {
         return $this->invoiceDtoFactory->createInvoiceDtoFromEntity(
             $this->repository->getInvoice($invoiceId)
