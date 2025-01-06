@@ -32,7 +32,7 @@ final class InvoiceServiceTest extends TestCase
         $this->dispatcher = $this->createMock(Dispatcher::class);
 
         $this->service = new InvoiceService(
-           $this->repository,
+            $this->repository,
             $this->dispatcher,
         );
     }
