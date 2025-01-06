@@ -58,3 +58,63 @@ The invoice should contain the following fields:
 
 * I used `entities classes src/Modules/Invoices/Entity/Invoice.php` and `src/Modules/Invoices/Entity/InvoiceProductLine.php` to avoid mocking laravel Model classes.
 * Invoice Read Model uses Dtos instead Laravel Model class to pass data to controller.
+
+## Endpoints: 
+
+### Create invoice
+
+#### With empty invoice product lines
+
+```
+curl --location 'http://127.0.0.1:8087/api/invoice' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "customer_name": "Jan Nowak",
+    "customer_email": "jan.nowak@gmail.com"
+}'
+```
+
+#### With invoice product lines
+
+```
+curl --location 'http://127.0.0.1:8087/api/invoice' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+
+    "customer_name": "Jan Nowak",
+    "customer_email": "jan.nowak@gmail.com",
+    "invoice_product_lines": [
+        {
+            "name": "Book 12",
+            "price": 1200,
+            "quantity": 3
+        },
+        {
+            "name": "Book 34",
+            "price": 5200,
+            "quantity": 5
+        }
+    ]
+}'
+```
+
+### Get invoice
+
+```
+curl --location 'http://127.0.0.1:8087/api/invoice/99c7127f-a5aa-42a4-adbe-ab4a65cefb7f' \
+--data ''
+```
+
+### Send invoice
+
+```
+curl --location 'http://127.0.0.1:8087/api/invoice/send/99c7127f-a5aa-42a4-adbe-ab4a65cefb7f' \
+--data ''
+```
+
+### Send invoice hook delivered 
+
+```
+curl --location 'http://127.0.0.1:8087/api/notification/hook/delivered/99c7127f-a5aa-42a4-adbe-ab4a65cefb7f' \
+--data ''
+```
