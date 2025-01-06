@@ -38,4 +38,15 @@ class InvoiceController extends Controller
             return new JsonResponse(data: [$exception->getMessage()], status: Response::HTTP_BAD_REQUEST);
         }
     }
+
+    public function sendInvoice(string $invoiceId): JsonResponse
+    {
+        try {
+            $this->invoiceService->sendInvoice($invoiceId);
+
+            return new JsonResponse(data: [], status: Response::HTTP_OK);
+        } catch (Throwable $exception) {
+            return new JsonResponse(data: [$exception->getMessage()], status: Response::HTTP_BAD_REQUEST);
+        }
+    }
 }

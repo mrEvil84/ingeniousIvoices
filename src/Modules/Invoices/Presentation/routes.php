@@ -15,6 +15,7 @@ use Modules\Invoices\Presentation\Middleware\EnsureAddInvoiceDataValid;
 
 
 Route::get('/invoice/{invoiceId}', [InvoiceController::class, 'getInvoice'])->name('invoice.view');
+Route::get('/invoice/send/{invoiceId}', [InvoiceController::class, 'sendInvoice'])->name('invoice.send');
 
 Route::post('/invoice', [InvoiceController::class, 'addInvoice'])
     ->name('invoice.add')

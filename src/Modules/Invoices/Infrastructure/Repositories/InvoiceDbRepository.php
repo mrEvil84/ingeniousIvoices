@@ -46,4 +46,14 @@ class InvoiceDbRepository implements InvoiceRepository
         }
         $invoice->save();
     }
+
+    public function invoiceExists(string $invoiceId): bool
+    {
+        return Invoice::query()->find($invoiceId) !== null;
+    }
+
+    public function getInvoiceById(string $invoiceId): ?Invoice
+    {
+        return Invoice::query()->find($invoiceId);
+    }
 }
