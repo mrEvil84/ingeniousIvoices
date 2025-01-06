@@ -7,8 +7,10 @@ namespace Modules\Invoices\Infrastructure\Repositories;
 use Illuminate\Support\Collection;
 use Modules\Invoices\Domain\Enums\StatusEnum;
 use Modules\Invoices\Domain\InvoiceRepository;
-use Modules\Invoices\Entities\Invoice;
-use Modules\Invoices\Entities\InvoiceProductLine;
+use Modules\Invoices\Entity\Invoice as InvoiceEntity;
+use Modules\Invoices\Entity\InvoiceProductLine as InvoiceProductLineEntity;
+use Modules\Invoices\Model\Invoice;
+use Modules\Invoices\Model\InvoiceProductLine;
 use Ramsey\Uuid\Uuid;
 
 class InvoiceDbRepository implements InvoiceRepository
@@ -52,14 +54,39 @@ class InvoiceDbRepository implements InvoiceRepository
         return Invoice::query()->find($invoiceId) !== null;
     }
 
-    public function getInvoiceById(string $invoiceId): ?Invoice
+    public function getInvoiceEntityById(string $invoiceId): ?InvoiceEntity
     {
-        return Invoice::query()->find($invoiceId);
+        $invoice = Invoice::query()->find($invoiceId);
+        $productLines = new Collection();
+
+        foreach ($invoice->invoiceProductLines()->get() as $invoiceProductLine) {
+            $productLines->add(
+                new InvoiceProductLineEntity(
+                    $invoiceProductLine->id,
+                    $invoiceProductLine->invoice_id,
+                    $invoiceProductLine->name,
+                    $invoiceProductLine->price,
+                    $invoiceProductLine->quantity,
+                )
+            );
+        }
+
+        if ($invoice !== null) {
+            return new InvoiceEntity(
+                $invoice->id,
+                $invoice->customer_name,
+                $invoice->customer_email,
+                StatusEnum::from($invoice->status),
+                $productLines
+            );
+        }
+        return null;
     }
+
 
     public function setInvoiceStatus(string $invoiceId, StatusEnum $status): void
     {
-        $invoice = $this->getInvoiceById($invoiceId);
+        $invoice = Invoice::query()->findOrFail($invoiceId);
         $invoice->status = $status->value;
         $invoice->save();
     }

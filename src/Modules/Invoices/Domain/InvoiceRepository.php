@@ -6,7 +6,7 @@ namespace Modules\Invoices\Domain;
 
 use Illuminate\Support\Collection;
 use Modules\Invoices\Domain\Enums\StatusEnum;
-use Modules\Invoices\Entities\Invoice;
+use Modules\Invoices\Entity\Invoice as InvoiceEntity;
 
 interface InvoiceRepository
 {
@@ -19,7 +19,7 @@ interface InvoiceRepository
 
     public function invoiceExists(string $invoiceId): bool;
 
-    public function getInvoiceById(string $invoiceId): ?Invoice;
+    public function getInvoiceEntityById(string $invoiceId): ?InvoiceEntity;
 
     public function setInvoiceStatus(string $invoiceId, StatusEnum $status): void;
 }

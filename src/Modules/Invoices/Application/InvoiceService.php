@@ -8,8 +8,8 @@ use Exception;
 use Modules\Invoices\Application\Command\AddInvoice;
 use Modules\Invoices\Domain\Enums\StatusEnum;
 use Modules\Invoices\Domain\InvoiceRepository;
-use Modules\Invoices\Entities\Invoice;
-use Modules\Invoices\Entities\InvoiceProductLine;
+use Modules\Invoices\Entity\Invoice;
+use Modules\Invoices\Entity\InvoiceProductLine as InvoiceProductLineEntity;
 use Modules\Invoices\Events\InvoiceSending;
 use Illuminate\Contracts\Events\Dispatcher;
 
@@ -44,15 +44,15 @@ final readonly class InvoiceService
     {
         $this->assertInvoiceExists($invoiceId);
 
-        /** @var Invoice $invoice */
-        $invoice = $this->repository->getInvoiceById($invoiceId);
+        $invoice = $this->repository->getInvoiceEntityById($invoiceId);
+
         $this->assertInvoiceDraftStatus($invoice);
         $this->assertInvoiceProductLines($invoice);
 
         $this->dispatcher->dispatch(
             new InvoiceSending(
-                $invoiceId,
-                $invoice->customer_email,
+                $invoice->getId(),
+                $invoice->getCustomerEmail(),
                 'Your invoice',
                 'Here your invoice.'
             )
@@ -61,10 +61,13 @@ final readonly class InvoiceService
         $this->setInvoiceStatusToSending($invoiceId);
     }
 
+    /**
+     * @throws Exception
+     */
     public function setStatusSentToClient(string $invoiceId): void
     {
         $this->assertInvoiceExists($invoiceId);
-        $invoice = $this->repository->getInvoiceById($invoiceId);
+        $invoice = $this->repository->getInvoiceEntityById($invoiceId);
         $this->assertInvoiceSendingStatus($invoice);
 
         $this->repository->setInvoiceStatus($invoiceId, StatusEnum::SentToClient);
@@ -101,25 +104,25 @@ final readonly class InvoiceService
 
     private function assertInvoiceDraftStatus(Invoice $invoice): void
     {
-        if ($invoice->status !== StatusEnum::Draft->value) {
-            throw new Exception(sprintf('Invoice %s is not draft.', $invoice->id));
+        if ($invoice->getStatus()->value !== StatusEnum::Draft->value) {
+            throw new Exception(sprintf('Invoice %s is not draft.', $invoice->getId()));
         }
     }
 
     private function assertInvoiceProductLines(Invoice $invoice): void
     {
-        if ($invoice->invoiceProductLines()->count() === 0) {
-            throw new Exception(sprintf('Invoice %s has no product lines.', $invoice->id));
+        if ($invoice->getInvoiceProductLines()->count() === 0) {
+            throw new Exception(sprintf('Invoice %s has no product lines.', $invoice->getId()));
         }
 
-        $productLines = $invoice->invoiceProductLines()->get();
-        /** @var InvoiceProductLine $productLine */
+        $productLines = $invoice->getInvoiceProductLines();
+        /** @var InvoiceProductLineEntity $productLine */
         foreach ($productLines as $productLine) {
-            if ($productLine->price <= 0 || $productLine->quantity <= 0) {
+            if ($productLine->getPrice() <= 0 || $productLine->getQuantity() <= 0) {
                 throw new Exception(
                     sprintf(
                         'Invoice %s contains Invoice product lines with invalid price or quantity.',
-                        $invoiceId
+                        $invoice->getId()
                     )
                 );
             }
@@ -133,8 +136,8 @@ final readonly class InvoiceService
 
     private function assertInvoiceSendingStatus(Invoice $invoice): void
     {
-        if ($invoice->status !== StatusEnum::Sending->value) {
-            throw new Exception(sprintf('Invoice %s have not sending status.', $invoice->id));
+        if ($invoice->getStatus()->value !== StatusEnum::Sending->value) {
+            throw new Exception(sprintf('Invoice %s have not sending status.', $invoice->getId()));
         }
     }
 }

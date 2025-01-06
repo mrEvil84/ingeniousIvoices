@@ -6,8 +6,8 @@ namespace Modules\Invoices\ReadModel\Dtos;
 
 use Illuminate\Support\Collection;
 use Modules\Invoices\Domain\Enums\StatusEnum;
-use Modules\Invoices\Entities\Invoice;
-use Modules\Invoices\Entities\InvoiceProductLine;
+use Modules\Invoices\Model\Invoice;
+use Modules\Invoices\Model\InvoiceProductLine;
 
 final readonly class InvoiceDtoFactory
 {

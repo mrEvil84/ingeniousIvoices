@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Invoices\Infrastructure\Repositories;
 
-use Modules\Invoices\Entities\Invoice;
+use Modules\Invoices\Model\Invoice;
 use Modules\Invoices\ReadModel\InvoiceReadModelRepository;
 
 final readonly class InvoiceReadModelDbRepository implements InvoiceReadModelRepository
