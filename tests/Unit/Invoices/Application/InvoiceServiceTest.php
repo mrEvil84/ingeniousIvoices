@@ -7,6 +7,7 @@ namespace Tests\Unit\Invoices\Application;
 use Generator;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Collection;
 use Modules\Invoices\Application\Command\AddInvoice;
 use Modules\Invoices\Application\InvoiceService;
 use Modules\Invoices\Domain\Enums\StatusEnum;
@@ -37,51 +38,50 @@ final class InvoiceServiceTest extends TestCase
     }
 
     #[DataProvider('invoiceValidDataProvider')]
-    public function testAddInvoice($data): void
+    public function testAddInvoice(string $customerName, string $customerEmail, ?Collection $productLines = null): void
     {
         $this
             ->repository
             ->expects($this->once())
             ->method('addInvoice')
             ->with(
-                $data['customer_name'],
-                $data['customer_email'],
-                StatusEnum::Draft
+                $customerName,
+                $customerEmail,
+                StatusEnum::Draft,
             );
         $this->service->addInvoice(
-            new AddInvoice($data['customer_name'], $data['customer_email'], $data['product_lines'])
+            new AddInvoice($customerName, $customerEmail, $productLines)
         );
     }
 
     public static function invoiceValidDataProvider(): Generator
     {
         yield 'valid invoice data with empty product lines' => [
-            [
-                'customer_name' => 'John Doe',
-                'customer_email' => 'john@doe.com',
-                'product_lines' => null,
-            ]
-         ];
+
+            'customerName' => 'John Doe',
+            'customerEmail' => 'john@doe.com',
+            'productLines' => null,
+        ];
 
         yield 'valid invoice data with product lines' => [
-            [
-                'customer_name' => 'John Doe',
-                'customer_email' => 'john@doe.com',
-                'product_lines' => collect(
+
+            'customerName' => 'John Doe',
+            'customerEmail' => 'john@doe.com',
+            'productLines' => collect(
+                [
                     [
-                        [
-                            'name' => 'Product 1',
-                            'quantity' => 1,
-                            'price' => 1000,
-                        ],
-                        [
-                            'name' => 'Product 2',
-                            'quantity' => 5,
-                            'price' => 2000,
-                        ]
+                        'name' => 'Product 1',
+                        'quantity' => 1,
+                        'price' => 1000,
+                    ],
+                    [
+                        'name' => 'Product 2',
+                        'quantity' => 5,
+                        'price' => 2000,
                     ]
-                ),
                 ]
-            ];
+            ),
+
+        ];
     }
 }
