@@ -20,4 +20,6 @@ interface InvoiceRepository
     public function invoiceExists(string $invoiceId): bool;
 
     public function getInvoiceById(string $invoiceId): ?Invoice;
+
+    public function setInvoiceStatus(string $invoiceId, StatusEnum $status): void;
 }

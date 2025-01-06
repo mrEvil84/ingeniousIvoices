@@ -23,9 +23,12 @@ class InvoiceController extends Controller
 
     public function getInvoice(string $invoiceId): JsonResponse
     {
-        $data = $this->invoiceReadModel->getInvoice($invoiceId);
-
-        return new JsonResponse(data: $data->toArray(), status: Response::HTTP_OK);
+        try {
+            $data = $this->invoiceReadModel->getInvoice($invoiceId);
+            return new JsonResponse(data: $data->toArray(), status: Response::HTTP_OK);
+        } catch (Throwable $exception) {
+            return new JsonResponse(data: [$exception->getMessage()], status: Response::HTTP_BAD_REQUEST);
+        }
     }
 
     public function addInvoice(Request $request): JsonResponse

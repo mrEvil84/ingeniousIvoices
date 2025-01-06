@@ -67,9 +67,7 @@ final readonly class InvoiceService
         $invoice = $this->repository->getInvoiceById($invoiceId);
         $this->assertInvoiceSendingStatus($invoice);
 
-        $invoice = $this->repository->getInvoiceById($invoiceId);
-        $invoice->status = StatusEnum::SentToClient->value;
-        $invoice->save();
+        $this->repository->setInvoiceStatus($invoiceId, StatusEnum::SentToClient);
     }
 
     private function assertPricesValid(AddInvoice $command): void
@@ -130,9 +128,7 @@ final readonly class InvoiceService
 
     private function setInvoiceStatusToSending(string $invoiceId): void
     {
-        $invoice = $this->repository->getInvoiceById($invoiceId);
-        $invoice->status = StatusEnum::Sending->value;
-        $invoice->save();
+        $this->repository->setInvoiceStatus($invoiceId, StatusEnum::Sending);
     }
 
     private function assertInvoiceSendingStatus(Invoice $invoice): void

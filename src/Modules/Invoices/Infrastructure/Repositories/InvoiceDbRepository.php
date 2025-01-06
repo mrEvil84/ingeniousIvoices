@@ -56,4 +56,11 @@ class InvoiceDbRepository implements InvoiceRepository
     {
         return Invoice::query()->find($invoiceId);
     }
+
+    public function setInvoiceStatus(string $invoiceId, StatusEnum $status): void
+    {
+        $invoice = $this->getInvoiceById($invoiceId);
+        $invoice->status = $status->value;
+        $invoice->save();
+    }
 }
