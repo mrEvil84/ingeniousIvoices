@@ -53,3 +53,8 @@ The invoice should contain the following fields:
 
 * Start the project by running `./start.sh`.
 * To access the container environment, use: `docker compose exec app bash`.
+
+## Solution decision
+
+* I used `entities classes src/Modules/Invoices/Entity/Invoice.php` and `src/Modules/Invoices/Entity/InvoiceProductLine.php` to avoid mocking laravel Model classes.
+* Invoice Read Model uses Dtos instead Laravel Model class to pass data to controller.
